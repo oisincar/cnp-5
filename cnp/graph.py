@@ -55,9 +55,9 @@ class Graph():
                 print("\n\n:c .. c1:", c1, "\n", c2)
                 return False
             if log_progress and ix % (len(self.G.edges)//100) == 0:
-                print(ix//(len(self.G.edges) * 100), "%")
+                print((ix*100)//len(self.G.edges), "%")
 
-        return False
+        return True
 
     def show(self, automate_pos = False):
         """
