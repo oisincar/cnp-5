@@ -13,23 +13,23 @@ from pysat.formula import WCNF
 def getSAT(graph, num_colours):
     G = graph.G # networkx graph
     ps = allPairs(range(num_colours))
-    
+
     clauses = []
     node_cl_map = {n: [] for n in G.nodes}  # Initilize empty
     cl_node_map = []
-    
+
     def addCl(c, nodes):
         clauses.append(c)
         cl_node_map.append(nodes)
         for n in nodes:
             node_cl_map[n].append(len(clauses)-1)
-    
+
     # Mapping from networkx to first colour var per node.
-    conv = lambda i: i*num_colours + 1 
-    
+    conv = lambda i: i*num_colours + 1
+
     # First node is first colour
     # addCl([1], [0])
-            
+
     # Each node must be exactly one colour
     for n in G.nodes:
         addCl([conv(n) + i for i in range(num_colours)], [n])
@@ -48,11 +48,11 @@ def getSAT(graph, num_colours):
 # This is used to ensure the central nodes of deGrey's M are not tricolor.
 def sameColourConstraint(nodes, num_colours):
     # Mapping from networkx to first colour var per node.
-    conv = lambda i: i*num_colours + 1 
+    conv = lambda i: i*num_colours + 1
 
     # Add constraint on this, no time that
     # 3 of the nodes are the same colour.
-    # CNF (n1c1 && n2c1 && n3c1) || (n1c2 && n2c2 && n3c2) 
+    # CNF (n1c1 && n2c1 && n3c1) || (n1c2 && n2c2 && n3c2)
     #  || (n1c3 && n2c3 && n3c3) || (n1c4 && n2c4 && n3c4)
     # == very long...
     # AND of all combinations of the variables from each bracket above ^.
@@ -181,7 +181,7 @@ def genApproxMinClauses(f):
     vmap = {}  # Map to origional clause
     topv = f.nv
 
-    s = MapleChrono(bootstrap_with=f.hard)  
+    s = MapleChrono(bootstrap_with=f.hard)
 
     print("Adding clauses")
     # Relaxing soft clauses and adding them to the solver

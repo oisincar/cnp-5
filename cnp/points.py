@@ -1,6 +1,6 @@
 # Set of functions for generating the coordinates of
 # interesting graphs, including those from the origional paper.
- 
+
 # All functions return pairs of points. Those in exact sympy form,
 # and those in approximate python notation.
 
@@ -37,25 +37,37 @@ def rotated(GGV, offset, angle, reEval=False):
     cAng = sp.simplify(sp.cos(angle) + I*sp.sin(angle))
     #G2 = [sp.simplify(cOff + (g-cOff)*cAng) for g in G]
     G2 = [offset + (g-offset)*cAng for g in G]
-    
+
     if reEval:
         GV2 = [complex(g) for g in G2]
     else:
         cOV,cAV = complex(offset), complex(cAng)
         GV2 = [cOV + (gv-cOV)*cAV for gv in GV]
-        
+
     return (G2, GV2)
+
+def empty():
+    return ([],[])
+
+# Add sympy point to some other points.
+def addP(pSet, p):
+    # TODO: Check if it's already here...
+
+    pSet[0].append(p)
+    pSet[1].append(complex(p))
+    return pSet
+
 
 # Add graph H to G. G should be larger.
 def add(GGV, HHV):
     G, GV = GGV
     H, HV = HHV
-    
+
     if G == []:
         return (H, HV)
     if H == []:
         return (G, GV)
-    
+
     # Find list of very nearby points to each new point
     tree = spatial.cKDTree(csToPnts(GV))
     # bList = tree.query_ball_point(csToPnts(HV), _accuracy)
@@ -68,13 +80,6 @@ def add(GGV, HHV):
             G.append(h)
             GV.append(hV)
 
-    #print(len(allPs), len(bSet))
-    # Ordering for ball_Point query
-    # for ix, (h, hV) in enumerate(zip(H, HV)):
-    #     if len(bList[ix]) == 0:
-    #         G.append(h)
-    #         GV.append(hV)
-    
 #         else:  # Check exact math (Untested!!)
 #             found = False
 #             for nIx in bList[ix]:
@@ -96,7 +101,7 @@ def makeH():
 def makeJ(core=None):
     # Grab offsets from H
     H, _ = makeH()
-    
+
     if core == None:
         MMV = makeMGraph()
     else:
@@ -113,7 +118,7 @@ def makeJ(core=None):
     for (c,_) in centers:
         MMV_sh = shifted(MMV, c)
         JJV = add(JJV, MMV_sh)
-        
+
     return JJV
 
 # Two Js, rotated.
@@ -123,7 +128,7 @@ def makeK(core=None):
     Jr = rotated(J, offset=0*I, angle=2*sp.asin(S(1)/4))
     print("Adding")
     return add(J, Jr)
-   
+
 # Two Ks, rotated.
 def makeL(core=None):
     K = makeK(core)
@@ -140,17 +145,17 @@ def makeN():
 def makeM():
     # Generate using angles
     # a, b = sp.symbols('a b')
-    # expr = 
+    # expr =
     # angs = [a * sp.asin(sp.sqrt(3)/2) + b * sp.asin(1/sp.sqrt(12))
     #         for b in range(-2, 3) for a in range(0,6) ]
     # ps = [sp.simplify(sp.cos(a) + I*sp.sin(a)) for a in angs]
 
     # allPs = []
-    # [allPs.append(p) 
+    # [allPs.append(p)
     #      for p in allSumPairs(ps)
     #      if not cont((p, complex(p)), allPs)
     #         and abs(complex(p)) <= math.sqrt(3) + _accuracy]
-             
+
     # Vectorspace of graph is H rotated different amounts.
     H = makeH()
     Hs = ([],[])
@@ -173,7 +178,7 @@ def makeM():
     M = makeH()
     for off in makeH()[0]:
         M = add(M, shifted(Ht, off))
-      
+
     return M
 
     # Now with all vectors, create all combinations sums of 1 or 2
@@ -184,7 +189,7 @@ def makeM():
     # Construct central graph, making sure the origin is first.
     # Verts 0-6 are the central H.
     # allPs = []
-    # [allPs.append(pp) 
+    # [allPs.append(pp)
     #      for pp in vectPs
     #      if not cont(pp, allPs)
     #         and dist(pp[1], 0) <= math.sqrt(3) + _accuracy]
@@ -222,5 +227,3 @@ def makeM():
 
     print("Full graph with", len(M), "vertices")
     return (M, MV)
-
- 

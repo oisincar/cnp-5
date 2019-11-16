@@ -11,7 +11,7 @@ class Graph():
         """
         Construct a graph from it's points, which should be given
         as a tuple of exact sympy values and approximate python values.
-        
+
         All unit length edges are efficiently generated.
 
         Set approx=False to use sympy to verify all constructed edges are exactly
@@ -36,13 +36,13 @@ class Graph():
         #         if abs(ds[i]-1) < _accuracy:
         #             self.G.add_edge(ix, int(nixs[i]))
                     # TODO: Test for exact measurement.
-                   
+
         pairs = tree.query_pairs(1+_accuracy)
         for (a,b) in pairs:
             if abs(dist(PV[a], PV[b])-1) < _accuracy:
                 self.G.add_edge(a, b)
                 # Optionally check for exact measurement here.
-                
+
     def checkNetXGraph(self, log_progress=False):
         """
         Check all edges are exactly length 1
