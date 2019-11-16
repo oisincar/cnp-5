@@ -40,11 +40,10 @@ Sympy, the resulting graph can later be confirmed to be exactly unit length
 without worrying about floating point precision.
 
 ** Installation & Usage
-Use requirements.txt to grab the nessasary packages. Unfortunately Pysat (used
-for generating proofs) requires python2, so you'll have to use the same.
+Use requirements.txt to grab the nessasary packages.
 
 #+BEGIN_EXAMPLE
 pip install -r requirements.txt
 #+END_EXAMPLE
 
-See examples.ipynb for some examples!
+And check out Example.ipynb for some examples!

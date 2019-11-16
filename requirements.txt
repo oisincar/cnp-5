@@ -1,4 +1,4 @@
-pysat
+python-sat
 sympy
 networkx
 scipy
