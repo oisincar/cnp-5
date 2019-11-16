@@ -9,8 +9,9 @@ import cmath
 
 import sympy as sp
 from sympy import Symbol, I, S
-import scipy.spatial as spatial
+from sympy.parsing.sympy_parser import parse_expr
 
+import scipy.spatial as spatial
 from .util import *
 
 # Error for floating point calculations.
@@ -227,3 +228,27 @@ def makeM():
 
     print("Full graph with", len(M), "vertices")
     return (M, MV)
+
+
+def fromFile(f_name):
+    with open(f_name) as f:
+        points_str = f.read().splitlines()
+
+    num_lines = len(points_str)
+    i = 0
+
+    def readExpr(s):
+        s = s.replace('Sqrt', 'sqrt').replace('[', '(').replace(']', ')')
+        return parse_expr(s, evaluate=True)
+
+    def readPoint(ix, pstr):
+        # Print progress
+        if num_lines > 1000 and ((ix-1)*100) // num_lines != (ix*100) // num_lines:
+            print((ix*100)//num_lines, '%')
+
+        # Drop first and last char {/}
+        pstr = pstr[1:-1]
+        cs = pstr.split(',')
+        return readExpr(cs[0]) + readExpr(cs[1]) * I
+
+    return [readPoint(ix, pstr) for ix, pstr in enumerate(points_str)]

@@ -1,5 +1,7 @@
 from .util import *
 
+import random
+
 # from pysat.solvers import Glucose4
 # from pysat.solvers import Glucose3
 # from pysat.solvers import Minisat22
@@ -69,6 +71,22 @@ def sameColourConstraint(nodes, num_colours):
 
     return rec(num_colours-1)
 
+# Say that 2 nodes must have equal colours.
+def colourEqualsConstraint(nodeA, nodeB, num_colours):
+    conv = lambda i: i*num_colours + 1
+
+    res = []
+    a, b = conv(nodeA), conv(nodeB)
+
+    # a should equal b.
+    # which is equilivent to (a v !b) ^ (!a v b)
+    # cause CNF magic or w/e.
+    for c in range(num_colours):
+        res.append([(a+c), -(b+c)])
+        res.append([-(a+c), (b+c)])
+
+    return res
+
 
 # Generate minimal graph for unsat colours.
 # Optionally include required additional clauses and nodes to keep.
@@ -97,7 +115,7 @@ def genMinGraph(graph, num_colours=4, approx=False, required_cl=[], required_nod
     bk_lst = [n for n in graph.G.nodes if n not in req_nodes]
     [graph.G.remove_node(i) for i in bk_lst]
 
-def optimize(graph, num_colours=4, extract_MUS=False, required_cl=[], required_nodes=[], verbosity=0):
+def optimize(graph, num_colours=4, extract_MUS=False, required_cl=[], required_nodes=[], verbosity=0, shuffle=False):
     """
     Use clever SAT things to reduce the number of nodes in the graph,
     while still maintaining it's UNSAT status.
@@ -118,6 +136,7 @@ def optimize(graph, num_colours=4, extract_MUS=False, required_cl=[], required_n
 
     clauses, n_clM, cl_nM = getSAT(graph, num_colours)
 
+
     f = WCNF()
     for c in required_cl:
         f.append(c)
@@ -134,7 +153,13 @@ def optimize(graph, num_colours=4, extract_MUS=False, required_cl=[], required_n
 
     s = MapleChrono(bootstrap_with=f.hard)
 
-    for i, clause in enumerate(clauses):
+    # Possibly load the graph nodes in in a random order.
+    ixs = [i for i in range(0, len(clauses))]
+    if shuffle:
+        random.shuffle(ixs)
+    # For each node, add the relevent clauses
+    for i in ixs:
+        clause = clauses[i]
         # Nodes involved in this clause
         nodes = cl_nM[i]
 
@@ -172,6 +197,7 @@ def optimize(graph, num_colours=4, extract_MUS=False, required_cl=[], required_n
     bk_lst = [n for n in graph.G.nodes if n not in required_nodes]
     print("Removing", len(bk_lst), "nodes.", len(required_nodes), "left.")
     [graph.G.remove_node(i) for i in bk_lst]
+    # TODO: Remove the points too...
 
 
 # Generate approximate minimal clauses for unsat,
