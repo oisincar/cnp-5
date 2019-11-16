@@ -1,0 +1,5 @@
+pysat
+sympy
+networkx
+scipy
+matplotlib

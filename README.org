@@ -36,7 +36,15 @@ Starting graph, and resulting minimal proofs for CNP > 1, 2, 3
 
 Also, I include a collection of code for creating and manipulating graphs in
 intuitive ways. Rotating, shifting, and merging. Since math is done exactly in
-Sympy, the resulting graph can later be confirmed to be planar and unit length
+Sympy, the resulting graph can later be confirmed to be exactly unit length
 without worrying about floating point precision.
 
-TODO: Write 'using' section with examples.
+** Installation & Usage
+Use requirements.txt to grab the nessasary packages. Unfortunately Pysat (used
+for generating proofs) requires python2, so you'll have to use the same.
+
+#+BEGIN_EXAMPLE
+pip install -r requirements.txt
+#+END_EXAMPLE
+
+See examples.ipynb for some examples!
