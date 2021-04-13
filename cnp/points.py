@@ -47,6 +47,10 @@ def rotated(GGV, offset, angle, reEval=False):
 
     return (G2, GV2)
 
+def from_complex(ps):
+    return ([p for p in ps],
+            [complex(p) for p in ps])
+
 def empty():
     return ([],[])
 
